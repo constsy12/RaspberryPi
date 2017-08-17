@@ -1,0 +1,39 @@
+# interfaces(5) file used by ifup(8) and ifdown(8)
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+####################################
+
+
+auto enxb827eb7472ff 
+iface enxb827eb7472ff inet static 
+address 192.168.0.102
+netmask 255.255.255.0
+gateway 192.168.0.1
+broadcast 192.168.0.255
+dns-nameservers 8.8.8.8 8.8.4.4
+
+#wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+#iface default inet dhcp
+
+
+#allow-hotplug wlx909f33eaba73
+#iface wlx909f33eaba73 inet static
+#address 192.168.0.103
+#netmask 255.255.255.0
+#gateway 192.168.0.1
+#network 192.168.0.0
+#breadcast 192.168.0.255
+#dns-nameservers 8.8.8.8 8.8.4.4
+#wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+#wpa-ssid "wifi_k"
+#wpa-psk "01010101"
+#wpa-proto WPA
+#wpa-key-mgmt WPA-PSK
+#wap-pairwise CCMP
+#wpa-auth_alg=OPEN
+

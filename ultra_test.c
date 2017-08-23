@@ -19,6 +19,8 @@
 #define GPPUDCLK0 0x98	// PIN PULL_UP/DOWN Enable Clock
 
 
+int map[10][10] = {0};
+
 typedef struct Local{
 	int no;
 	int state;
@@ -40,12 +42,16 @@ int Queue[3] = {0};
 
 unsigned int tmp = 0x00;
 int r1=0,r2=0,r3=0;
-int dist1=0;dist2=0,dist3=0;
-
+int dist1=0,dist2=0,dist3=0;
+int pop1=0,pop2=0,pop3=0;
 
 void *mmaped;
 
 void sig_handler(int signum){
+//#################################################
+
+	/* CHECK */
+
 	/* SEND TRIGGER */
         pin_read = 0;
         pin_time = 0;
@@ -127,12 +133,67 @@ void sig_handler(int signum){
 	if(r3<10)
 		dist3++;
 
-	if(dist1==10){
-		dist1 = 0;
-		if(LocalA.state==0)
+//##############################################
+
+	/* PUSH */
+
+	if(dist1==5){
+		//dist1 = 0;
+		if(LocalA.state==0){
 			LocalA.state=1;
+			printf(" ##### Local A push\n\n");
+		}
+	}
+	if(dist2==5){
+		//dist2 = 0;
+		if(LocalB.state==0){
+			LocalB.state=1;
+			printf(" ##### Local B push\n\n");
+		}
+	}
+	if(dist3==5){
+		//dist3 = 0;
+		if(LocalC.state==0){
+			LocalC.state=1;
+			printf(" ##### Local C push\n\n");
+		}
+	}
+//##############################################
+
+	/* POP */
+
+	if(dist1>=5 && r1>10){
+		pop1++;
+		if(pop1==5){
+			pop1=0;
+			dist1=0;
+			LocalA.state=0;
+			printf(" $$$$$ Local A pop\n\n");
+		}
 	}
 
+	if(dist2>=5 && r2>10){
+                pop2++;
+                if(pop2==5){
+                        pop2=0;
+                        dist2=0;
+                        LocalB.state=0;
+                        printf(" $$$$$ Local B pop\n\n");
+                }
+        }
+
+	if(dist3>=5 && r3>10){
+                pop3++;
+                if(pop3==5){
+                        pop3=0;
+                        dist3=0;
+                        LocalC.state=0;
+                        printf(" $$$$$ Local C pop\n\n");
+                }
+        }
+
+
+//##############################################
 
 	printf("\n >> RESULT : %d cm, %d cm, %d cm\n\n",r1,r2,r3);
 
@@ -161,10 +222,28 @@ int main(){
 	int check = 0;
 	int i=0,j=0;
 
+	addr[GPFSEL0/4] |= (1<<9);      //GPIO_PIN_3  FSEL0 001 >> output
+        addr[GPFSEL0/4] |= (1<<24);     //GPIO_PIN_8  FSEL0 001 >> output
+        addr[GPFSEL2/4] |= (1<<9);      //GPIO_PIN_23 FSEL2 001 >> output
+        
+
+        addr[GPPUD/4] |= 0x01;          //GPPUD set Pull-Down Control
+        addr[GPPUDCLK0/4] |= (1<<18);   //GPIO_PIN_18 CLK
+        addr[GPPUDCLK0/4] |= (1<<7);    //GPIO_PIN_7  CLK
+        addr[GPPUDCLK0/4] |= (1<<24);   //GPIO_PIN_23 CLK
+
+        printf("\n addr = %x\n",*addr);
+
 	signal(SIGALRM,sig_handler);
 	alarm(1);
 
-	while(1);
+	while(1){
+/*
+		if(LocalA.state==1){
+			printf("\n >> LocalA is Waiting...\n");
+			
+		}*/
+	}
 
 /*
 

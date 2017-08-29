@@ -25,7 +25,11 @@
 #define GPPUDCLK0 0x98	// PIN PULL_UP/DOWN Enable Clock
 
 
-int map[10][10] = {0};
+#define RMAX 5
+#define LMAX 3
+#define SMAX 5
+
+int map[9][9] = {0};
 
 typedef struct Position{
 	int x;
@@ -35,7 +39,7 @@ typedef struct Position{
 typedef struct Local{
 	int no;		// location num
 	int state;	// check input or output
-	P store[5];	// position of store
+	P store[SMAX];	// position of store
 	int count;	// number of stored 
 	int r;		// ultra_ range
 	int dist;	// ultra_ check input
@@ -43,26 +47,42 @@ typedef struct Local{
 }L;
 
 typedef struct Robot{
-	char ip[10];	// client ip
+	char ip[RMAX];	// client ip
 	int state;	// 0: unusable, 1: usable, 2: using
 	int dir;	// direction
 	P rpos;		// real_time pos
 	P dest;		// destination pos
 }R;
 
-R Robots[10]={0};
-L Loc[3] = {{1,0,{{0,0},{0,0},{0,0},{0,0},{0,0}},0,0,0,0},
-	    {2,0,{{0,0},{0,0},{0,0},{0,0},{0,0}},0,0,0,0},
-	    {3,0,{{0,0},{0,0},{0,0},{0,0},{0,0}},0,0,0,0}};
+R Robots[RMAX]={{},
+	        {},
+	        {},
+	        {},
+	        {}};
+};
+L Loc[LMAX] = {{1,0,{{3,3},{4,3},{5,3},{6,3},{7,3}},0,0,0,0},
+   	       {2,0,{{3,5},{4,5},{5,5},{6,5},{7,5}},0,0,0,0},
+	       {3,0,{{3,7},{4,7},{5,7},{6,7},{7,7}},0,0,0,0}};
 
 
 int cnt = 0;
 int pin_read = 0;
 int pin_time = 0;
 unsigned int *addr = 0;
-int Queue[3] = {0};
+int Queue[LMAX] = {0};
 int front = 0;
 int rear = 0;
+
+/* socket */
+int serv_sock;
+int clnt_sock[10];
+struct sockaddr_in serv_addr;
+struct sockaddr_in clnt_addr;
+int clnt_addr_size;
+int clnt_num = 0;
+int str_len;
+char msg[50];
+
 
 
 unsigned int tmp = 0x00;
@@ -111,6 +131,30 @@ int main(){
 	int check = 0;
 	int i=0,j=0;
 
+	if(argc!=2){
+		printf("Usage: %s <PORT>\n",argv[0]);
+		exit(1);
+	}
+	
+	serv_sock = socket(PF_INET,SOCK_STREAM,0);
+	if(serv_sock==-1)
+		error_m("socket_err\n");
+
+	memset(&serv_addr,0,sizeof(serv_addr));
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	serv_addr.sin_port = htons(atoi(argv[1]));
+
+	if(bind(serv_sock,(struct sockaddr*)&serv_addr,sizeof(serv_addr))==-1)
+		error_m("bind_err\n");
+	if(listen(serv_sock,5)==-1)
+		error_m("listen_err\n");
+
+	clnt_addr_size = sizeof(clnt_addr);
+
+	
+
+
 	/* Ultra Sensor Pin Config */
 	addr[GPFSEL0/4] |= (1<<9);      //GPIO_PIN_3  FSEL0 001 >> output
         addr[GPFSEL0/4] |= (1<<24);     //GPIO_PIN_8  FSEL0 001 >> output
@@ -130,6 +174,8 @@ int main(){
 	alarm(1);
 
 	while(1){
+		
+
 		if(Queue[rear]!=0){
 			CallRobot(Queue[rear]);
 		}
@@ -141,17 +187,25 @@ int main(){
 
 void CallRobot(int location){
 	int i;
-	for(i=0;i<10;i++){
+	for(i=0;i<RMAX;i++){
 		if(Robots[i].state==1){
 			Robots[i].state = 2;
 			Robots[i].dest.x = Loc[location].store[Loc[location].count].x;
 			Robots[i].dest.y = Loc[location].store[Loc[location].count++].y;
 			
 			/* clear queue */
-			Queue[rear++] = 0;
-			break;
+			Queue[rear++%LMAX] = 0;
+			
+			printf(" *** Match Robot[%d] to Locate[%d]\n\n",i,location);
+			return;
 		}
 	}
+	printf("  [!] All Robots are busy now\n\n");
+	return;
+}
+
+void Road(L* tmp){
+	
 }
 
 void Ultra(int num,int trig,int echo){
@@ -187,7 +241,7 @@ void Ultra(int num,int trig,int echo){
 	if(Loc[num].dist==5){
 		if(Loc[num].state==0){
 			Loc[num].state = 1;
-			Queue[front++%3] = num;
+			Queue[front++%LMAX] = num;
 			printf(" ##### Local [%d] push\n\n",num);
 		}
 	}

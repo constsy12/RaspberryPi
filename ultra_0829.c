@@ -33,21 +33,21 @@ typedef struct Position{
 }P;
 
 typedef struct Local{
-	int no;
-	int state;
-	P store[5];
-	int count;
-	int r;
-	int dist;
-	int pop;
+	int no;		// location num
+	int state;	// check input or output
+	P store[5];	// position of store
+	int count;	// number of stored 
+	int r;		// ultra_ range
+	int dist;	// ultra_ check input
+	int pop;	// ultra_ check output
 }L;
 
 typedef struct Robot{
-	char ip[10];
+	char ip[10];	// client ip
 	int state;	// 0: unusable, 1: usable, 2: using
-	int dir;
-	P rpos;
-	P dest;
+	int dir;	// direction
+	P rpos;		// real_time pos
+	P dest;		// destination pos
 }R;
 
 R Robots[10]={0};
@@ -66,9 +66,6 @@ int rear = 0;
 
 
 unsigned int tmp = 0x00;
-//int r1=0,r2=0,r3=0;
-//int dist1=0,dist2=0,dist3=0;
-//int pop1=0,pop2=0,pop3=0;
 
 void *mmaped;
 

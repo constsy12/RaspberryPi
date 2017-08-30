@@ -48,19 +48,24 @@ typedef struct Local{
 
 typedef struct Robot{
 //	char ip[10];	// client ip
+	int loc;	// location num
 	int sock;	// clnt_sock
 	int state;	// 0: unusable, 1: usable, 2: location, 3: moving, 4: return
-	int dir;	// direction
+	int dir;	// direction 0: Forward, 1: Right, 2: Left, 3: Backward
 	P rpos;		// real_time pos
+	P base;		// base pos
 	P dest;		// destination pos
 }R;
 
-R Robots[RMAX]={{},
-	        {},
-	        {},
-	        {},
-	        {}};
+/*
+R Robots[RMAX]={{0,0,0,{3,0},{3,0},{3,0}},
+	        {0,0,0,{4,0},{4,0},{4,0}},
+	        {0,0,0,{5,0},{5,0},{5,0}},
+	        {0,0,0,{6,0},{6,0},{6,0}},
+	        {0,0,0,{7,0},{7,0},{7,0}}};
 };
+*/
+R Robots[RMAX] = {0};
 L Loc[LMAX] = {{1,0,{{3,3},{4,3},{5,3},{6,3},{7,3}},0,0,0,0},
    	       {2,0,{{3,5},{4,5},{5,5},{6,5},{7,5}},0,0,0,0},
 	       {3,0,{{3,7},{4,7},{5,7},{6,7},{7,7}},0,0,0,0}};
@@ -208,6 +213,7 @@ int main(){
 			Robots[clnt_num].dir = 1;
 			Robots[clnt_num].rpos.x = 2 + clnt_num;
 			Robots[clnt_num].rpos.y = 0;
+			Robots[clnt_num].base = rpos;
 			Robots[clnt_num++].dest = rpos;
 		
 			pthread_mutex_unlock(&mu);
@@ -235,13 +241,24 @@ void* thread_handler(void* num){
 
 	switch(Robots[idx].state){
 		case 2:			// waiting
-			
+			/* base to start point */
+			if(Robots[idx].rpos.x<start.x){
+				Run(F);	
+			}else if(Robots[idx].rpos.x==start.x){
+				if(Robots[idx].rpos.y==Robots[idx].base.y){
+					Run(L);
+					Run(F);
+				}
+				
+			}	
 			break;
 		case 3:			// location
+			/* start point to location */
 			/* change dest to store when robot departed */
 			
 			break;
 		case 4:			// moving
+			/* location to store */
 			/* landing & change dest to base */
 
 			break;
@@ -264,13 +281,31 @@ void* thread_handler(void* num){
 	}
 }
 
+void Run(char comm){
+	switch(comm){
+		case 'F':
+			
+			break;
+		case 'B':
+
+			break;
+		case 'R':
+
+			break;
+		case 'L':
+
+			break;
+	}
+}
+
 void CallRobot(int location){
 	int i;
 	for(i=0;i<RMAX;i++){
 		if(Robots[i].state==1){
 			Robots[i].state = 2;
-			Robots[i].dest.x = Loc[location].store[Loc[location].count].x;
-			Robots[i].dest.y = Loc[location].store[Loc[location].count++].y;
+			Robots[i].loc = location;
+		//	Robots[i].dest.x = Loc[location].store[Loc[location].count].x;
+		//	Robots[i].dest.y = Loc[location].store[Loc[location].count++].y;
 			
 			/* clear queue */
 			Queue[rear++%LMAX] = 0;
@@ -281,10 +316,6 @@ void CallRobot(int location){
 	}
 	printf("  [!] All Robots are busy now\n\n");
 	return;
-}
-
-void Road(L* tmp){
-	
 }
 
 void Ultra(int num,int trig,int echo){

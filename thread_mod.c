@@ -102,7 +102,7 @@ void *mmaped;
 
 void CallRobot(int location);
 void Ultra(int num,int trig,int echo);
-
+void error_m(char* str);
 
 
 void sig_handler(int signum){
@@ -140,7 +140,7 @@ unsigned int *get_base_addr(){
 	return (unsigned int*)mmaped;
 }
 
-int main(){
+int main(int argc, char** argv){
 	addr = get_base_addr();
 	int check = 0;
 	int i=0,j=0;
@@ -201,10 +201,10 @@ int main(){
 		/* Configuration */		
 		write(clnt_sock,auth,strlen(auth));
 		sleep(1);
-		memset(config,'\0',sizeof(config));
-		read(clnt_sock,config,10);
+		memset(conf,'\0',sizeof(conf));
+		read(clnt_sock,conf,10);
 
-		if(strcmp(config,"hiserver")==0){
+		if(strcmp(conf,"hiserver")==0){
 
 			/* Initializing Robot */
 			pthread_mutex_lock(&mu);
@@ -214,8 +214,8 @@ int main(){
 			Robots[clnt_num].dir = 1;
 			Robots[clnt_num].rpos.x = 0;
 			Robots[clnt_num].rpos.y = 2 + clnt_num;
-			Robots[clnt_num].base = rpos;
-			Robots[clnt_num++].dest = rpos;
+			Robots[clnt_num].base = Robots[clnt_num].rpos;
+			Robots[clnt_num].dest = Robots[clnt_num++].rpos;
 		
 			pthread_mutex_unlock(&mu);
 			
@@ -297,7 +297,7 @@ void* thread_handler(void* num){
 					map[Robots[idx].rpos.x++][Robots[idx].rpos.y]=0;
 					map[Robots[idx].rpos.x][Robots[idx].rpos.y] = 1;
 					comm = 'F';
-					Pthread_mutex_unlock(&mu);
+					pthread_mutex_unlock(&mu);
 				}
 			}else{
 				if(Robots[idx].rpos.y > 1){
@@ -400,50 +400,10 @@ void* thread_handler(void* num){
 			break;
 	}
 
-	write(sock,comm,sizeof(comm));
+	write(sock,&comm,sizeof(comm));
 	comm = 'S';	
 
-//#######################################################################
-	if(Robots[idx].state == 2){
-
-
-		pthread_mutex_lock(&mu);
-		
-		map[Robots[idx].rpos.x][Robots[idx].rpos.y] = 1;
-
-		pthread_mutex_unlock(&mu);
-		
-		
 	}
-//######################################################################
-	}
-	}
-}
-
-char GetDir(int rnum,int dir){
-	char comm;
-
-	if(rnum>dir
-
-	
-
-	return comm;
-}
-
-void Run(char comm){
-	switch(comm){
-		case 'F':
-			
-			break;
-		case 'B':
-
-			break;
-		case 'R':
-
-			break;
-		case 'L':
-
-			break;
 	}
 }
 
@@ -516,3 +476,9 @@ void Ultra(int num,int trig,int echo){
 		}
 	}
 }
+
+void error_m(char* str){
+	fputs(str,stderr);
+	exit(1);
+}
+

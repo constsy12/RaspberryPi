@@ -459,8 +459,9 @@ void* thread_handler(void* num){
 						comm = 'R';
 						Robots[idx].dir = 1;
 					}else{
-						if(Robots[idx].rpos.x > Robots[idx].base.x){
-							pthread_mutex_lock(&mu);							map[Robots[idx].rpos.x--][Robots[idx].rpos.y] = 0;
+						if(Robots[idx].rpos.x > 0){
+							pthread_mutex_lock(&mu);
+							map[Robots[idx].rpos.x--][Robots[idx].rpos.y] = 0;
 							map[Robots[idx].rpos.x][Robots[idx].rpos.y] = 1;
 							comm = 'B';
 							Robots[idx].state = 1;
@@ -477,6 +478,10 @@ void* thread_handler(void* num){
 			break;
 	}
 	sleep(1);
+	if(comm=='G'){
+		printf("!!!!!!!!!!!!!!No Command\n\n");
+		comm = 'C';
+	}
 	write(sock,&comm,sizeof(comm));
 //	printf("\n&& write comm = %c\n",comm);
 	
@@ -495,9 +500,7 @@ void CallRobot(int location){
 		if(Robots[i].state==1){
 			Robots[i].state = 2;
 			Robots[i].loc = location;
-		//	Robots[i].dest.x = Loc[location].store[Loc[location].count].x;
-		//	Robots[i].dest.y = Loc[location].store[Loc[location].count++].y;
-			
+					
 			/* clear queue */
 			Queue[rear++%LMAX] = 0;
 			

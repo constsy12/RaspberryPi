@@ -95,6 +95,9 @@ int main(int argc, char** argv){
 		}else if(comm=='D'){
 			printf("  Landing...\n");
 			comm = 'G';
+		}else if(comm=='C'){
+			printf("  Call Back...\n");
+			comm = 'G';
 		}else{
 			printf("  Error %c\n\n",comm);
 			comm = 'E';

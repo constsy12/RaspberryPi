@@ -1,10 +1,22 @@
-#!/usr/bin/php -q
+<!--#!/usr/bin/php -q-->
 <?php
+#!/usr/bin/php -q
+$host='localhost';
+$user='root';
+$pw='1234';
+$db='HUB';
+$mysqli=new mysqli($host,$user,$pw,$db);
+
+if($mysqli){
+//	echo "MYSQL SUCCESS";
+}else{
+	echo "MYSQL FAIL";
+}
+
 set_time_limit(0);
 $i=1;
 $page=$_SERVER['PHP_SELF'];
 $sec="1";
-//while(true){
 ?>
 <!DOCTYPE html>
 
@@ -36,13 +48,39 @@ $sec="1";
 <body>
 	<div class="container">
 		<header>
-			<h2> TEST PAGE </h2>
+			<h2 style="virtical-align:center;"> TEST PAGE </h2>
 		</header>
 
 		<section>
 			<section class="test_L">
 			<h1> LEFT </h1>
-			<h2><?php echo $i++ ?></h2>
+			<table style="width: 300px">
+				
+				<?php
+				$q="select data from Map;";
+				$result=$mysqli->query($q);
+				#$row=$result->fetch_assoc();
+				
+				
+				for($y=0;$y<9;$y++){
+					?><tr><?php
+					for($x=0;$x<8;$x++){
+						
+						?>
+						<th><?php
+							$row=$result->fetch_array(); 
+							echo " ".$row['data']." ";
+					
+							  
+						?></th>
+						<?php
+					}
+					?></tr><?php
+				
+				}
+				?>
+
+			</table>
 			</section>
 
 			<section class="test_R">
@@ -56,9 +94,4 @@ $sec="1";
 	</div>
 </body>
 </html>	
-<?php
-//sleep(1);
-//$i++;
-//}
-?>
 

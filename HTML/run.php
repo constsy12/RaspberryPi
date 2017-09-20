@@ -48,7 +48,7 @@ $sec="1";
 <body>
 	<div class="container">
 		<header>
-			<h2 style="virtical-align:center;"> TEST PAGE </h2>
+			<h2> TEST PAGE </h2>
 		</header>
 
 		<section>
@@ -57,21 +57,25 @@ $sec="1";
 			<table style="width: 300px">
 				
 				<?php
-				$q="select data from Map;";
-				$result=$mysqli->query($q);
+			//	$q="select data from Map;";
+			//	$result=$mysqli->query($q);
 				#$row=$result->fetch_assoc();
 				
 				
 				for($y=0;$y<9;$y++){
 					?><tr><?php
 					for($x=0;$x<8;$x++){
+						$q = "select data from Map where x=".$x." && y=".$y.";";
+                                                $result = $mysqli->query($q);
+                                                $row=$result->fetch_array();
 						
+						if($row['data']=='S'){?>
+							<th style="background-color:Tomato">
+						<?php }else{
 						?>
-						<th><?php
-							$row=$result->fetch_array(); 
+						<th><?php }
 							echo " ".$row['data']." ";
-					
-							  
+												  
 						?></th>
 						<?php
 					}

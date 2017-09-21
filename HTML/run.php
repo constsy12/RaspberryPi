@@ -17,7 +17,7 @@ set_time_limit(0);
 
 
 $page=$_SERVER['PHP_SELF'];
-$sec="1";
+$sec="2";
 ?>
 <!DOCTYPE html>
 
@@ -25,22 +25,26 @@ $sec="1";
 <head>
 <style>
 	body{background-color: powderblue; font-family: "Raleway",sans-serif;
-	     text-align: center;}
-	div.container{width: 100%; background-color: powderblue;
-		      text-align: center;}
-	header, footer{margin: 20px; color: white; text-align: center;
-		       height: 100px; width: 900px; }
+	     text-align: center; }
+	div.container{width: 900px; background-color: powderblue;
+		      text-align: center; margin: 0 auto;}
+	header, footer{margin: 0 auto; color: white; text-align: center;
+		       height: 100px; width: 900px; padding-top:30px;}
 	section{color: black; background-color: powderblue;
 		height: 400px; width:900px;}
-	section.test_L{margin: 10px 5px 10px 10px; color: black; 
+	section.test_L{margin: 10px 10px 10px 10px; color: black; 
 		       background-color: white;
-		       text-align: center; max-width: 400px; height: 400px; 
+		       text-align: center; width: 430px; height: 430px; 
 		       float: left;  
 		     }
-	section.test_R{margin: 10px 10px 10px 5px; color: black; 
+	section.test_R{margin: 10px 10px 10px 10px; color: black; 
 		       background-color: white;
-		       text-align: center; max-width: 400px; height: 400px;
-		       float: left;}
+		       text-align: center; width: 430px; height: 430px;
+		       float: left;
+		     }
+	div.box{ background-color: powderblue; margin: 0 auto;
+		 text-align: center; margin-bottom: 35px; 
+		 border-radius: 15px; color: white; width:80px;}
 </style>
 	<meta http-equiv="refresh" content="<?php echo $sec?>;URL='<?php echo $page?>'">
 
@@ -49,19 +53,19 @@ $sec="1";
 <body align="center">
 	<div class="container" align="center">
 		<header align="center">
-			<h2> TEST PAGE </h2>
+			<h1> A.L.S </h1>
 		</header>
 
 		<section align="center">
 			<section class="test_L">
-			<h1 style="padding-bottom: 15px;"> MAP </h1>
-			<table align="center" style="width:300px; height:300px; ">
+<!--	<h1 style="padding-bottom:15px; color:white;"> MAP </h1>  -->
+			<div class="box" align="center" >
+				<h1>MAP</h1>
+			</div>
+			<table align="center" style="width:320px; height:320px;
+				      padding: 15px; border: 5px solid powderblue; ">
 				
 				<?php
-			//	$q="select data from Map;";
-			//	$result=$mysqli->query($q);
-				#$row=$result->fetch_assoc();
-				
 				
 				for($y=0;$y<9;$y++){
 					?><tr style="height:20px;"><?php
@@ -99,12 +103,15 @@ $sec="1";
 			</section>
 
 			<section class="test_R">
-			<h1> LOCATION STATE </h1>
+			<div class="box" align="center" style="width: 250px;" >
+				<h1> LOCATION STATE </h1>
 			</section>
 		</section>
 
 		<footer align="center">
-			<h4> FOOTER </h4>	
+			<br><br>
+			<h3> DAILY-C </h3>
+			<h4> Jin Taekyun . Kang Seoyun . Lee Jaeseok </h4>	
 		</footer>
 	</div>
 </body>

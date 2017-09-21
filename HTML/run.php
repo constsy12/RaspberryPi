@@ -17,34 +17,39 @@ set_time_limit(0);
 
 
 $page=$_SERVER['PHP_SELF'];
-$sec="2";
+$sec="1";
 ?>
 <!DOCTYPE html>
 
 <html>
 <head>
 <style>
-	body{background-color: powderblue; font-family: "Raleway",sans-serif;
-	     text-align: center; }
-	div.container{width: 900px; background-color: powderblue;
-		      text-align: center; margin: 0 auto;}
-	header, footer{margin: 0 auto; color: white; text-align: center;
-		       height: 100px; width: 900px; padding-top:30px;}
-	section{color: black; background-color: powderblue;
-		height: 400px; width:900px;}
-	section.test_L{margin: 10px 10px 10px 10px; color: black; 
-		       background-color: white;
-		       text-align: center; width: 430px; height: 430px; 
-		       float: left;  
+	body{ background-color: powderblue; font-family: "Raleway",sans-serif;
+	      text-align: center; 
+	    }
+	div.container{ width: 900px; background-color: powderblue;
+		       text-align: center; margin: 0 auto;
 		     }
-	section.test_R{margin: 10px 10px 10px 10px; color: black; 
-		       background-color: white;
-		       text-align: center; width: 430px; height: 430px;
-		       float: left;
-		     }
+	header, footer{ margin: 0 auto; color: white; text-align: center;
+		        height: 100px; width: 900px; padding-top:30px;
+		      }
+	section{ color: black; background-color: powderblue;
+		 height: 400px; width:900px;
+	       }
+	section.test_L{ margin: 10px 10px 10px 10px; color: black; 
+		        background-color: white;
+		        text-align: center; width: 430px; height: 430px; 
+		        float: left;  
+		      }
+	section.test_R{ margin: 10px 10px 10px 10px; color: black; 
+		        background-color: white;
+		        text-align: center; width: 430px; height: 430px;
+		        float: left;
+		      }
 	div.box{ background-color: powderblue; margin: 0 auto;
-		 text-align: center; margin-bottom: 35px; 
-		 border-radius: 15px; color: white; width:80px;}
+		 text-align: center; margin-bottom: 30px; margin-top: 20px; 
+		 border-radius: 15px; color: white; width:100px;
+	       }
 </style>
 	<meta http-equiv="refresh" content="<?php echo $sec?>;URL='<?php echo $page?>'">
 
@@ -53,17 +58,16 @@ $sec="2";
 <body align="center">
 	<div class="container" align="center">
 		<header align="center">
-			<h1> A.L.S </h1>
+			<h1> A . L . S </h1>
 		</header>
 
 		<section align="center">
 			<section class="test_L">
-<!--	<h1 style="padding-bottom:15px; color:white;"> MAP </h1>  -->
-			<div class="box" align="center" >
+			<div class="box" align="center" style="height: 30px">
 				<h1>MAP</h1>
 			</div>
 			<table align="center" style="width:320px; height:320px;
-				      padding: 15px; border: 5px solid powderblue; ">
+			      padding: 15px; border: 5px solid powderblue; ">
 				
 				<?php
 				
@@ -75,11 +79,11 @@ $sec="2";
                                                 $row=$result->fetch_array();
 						
 						switch($row['data']){
-						case 'E':
+						case 'M':
 	?><th style="color:white; width:15px; height:20px;"><?php
 							echo $row['data'];
 							break;
-						case 'S':
+						case 'L':
 	?><th style="background-color:Tomato; width:15px; height:20px;"><?php
 							echo $row['data'];
 							break;
@@ -87,10 +91,20 @@ $sec="2";
 	?><th style="background-color:Yellow; width:15px; height:20px;"><?php
 							echo $row['data'];
 							break;
-						case 'D':
+						case 'W':
 	?><th style="background-color:Green; width:15px; height:20px;"><?php
 							echo $row['data'];
 							break;
+						case 'F':
+        ?><th style="background-color:Green; width:15px; height:20px;"><?php
+                                                        echo $row['data'];
+                                                        break;
+						case 'E':
+        ?><th style="background-color:Tomato; width:15px; height:20px;"><?php
+                                                        echo $row['data'];
+                                                        break;
+
+						
 						}
 
 						?></th><?php
@@ -102,9 +116,45 @@ $sec="2";
 			</table>
 			</section>
 
-			<section class="test_R">
-			<div class="box" align="center" style="width: 250px;" >
-				<h1> LOCATION STATE </h1>
+			<section class="test_R" align="center">
+			<div class="box" align="center" style="width: 250px;
+							height: 30px;" >
+				<h1>LOCATION STATE</h1>
+			</div>
+			<table style="height: 300px; width: 300px; 
+				      font-size: 30px; padding: 20px;"
+			       align="center">
+			  <tr>
+				<td style="background-color: powderblue;
+					   border-radius: 15px; 
+					   border: 5px solid white;
+					   width: 100px; color: white;">
+				A</td>
+				<td><?php 
+					echo "0";
+				?></td>
+			  </tr>
+			  <tr>
+				<td style="background-color: powderblue;
+					   border-radius: 15px;
+					   border: 5px solid white;
+					   width: 100px; color: white;">
+				B</td>
+				<td><?php 
+					echo "0";
+				?></td>
+			  </tr>
+			  <tr>
+				<td style="background-color: powderblue;
+					   border-radius: 15px;
+					   border: 5px solid white;
+					   width: 100px; color: white;">
+				C</td>
+				<td><?php 
+					echo "0";
+				?></td>
+			  </tr>
+			</table>
 			</section>
 		</section>
 

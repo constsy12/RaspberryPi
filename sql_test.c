@@ -42,11 +42,11 @@ int map[8][9] = {{0,0,0,1,0,1,0,1},
 int map[8][9] = {{0,0,0,0,0,0,0,0,0},
 		 {0,0,0,0,0,0,0,0,0},
 		 {0,0,0,2,2,2,2,2,0},
-		 {2,0,0,0,0,0,0,0,0},
+		 {5,0,0,0,0,0,0,0,0},
 		 {0,0,0,2,2,2,2,2,0},
-		 {2,0,0,0,0,0,0,0,0},
+		 {6,0,0,0,0,0,0,0,0},
 		 {0,0,0,2,2,2,2,2,0},
-		 {2,0,0,0,0,0,0,0,0}};
+		 {7,0,0,0,0,0,0,0,0}};
 
 typedef struct Position{
 	int x;
@@ -282,6 +282,7 @@ void* thread_map_handler(void* tmp){
 	int i=0;
 	int t = 0;
 	char send;
+	int cnt=0;
 
 	sock = socket(PF_INET,SOCK_STREAM,0);
 	if(sock==-1)
@@ -296,26 +297,41 @@ void* thread_map_handler(void* tmp){
 		error_m("connect_error\n");
 
 	while(1){
+		
 		for(i=0;i<72;i++){
 			t = map[i/9][i%9];
 			switch(t){
 				case 0:
-					send = 'E';
+					send = 'M';
 					break;
 				case 1:
 					send = 'R';
 					break;
 				case 2:
-					send = 'S';
+					send = 'E';
 					break;
 				case 3:
-					send = 'D';
+					send = 'F';
+					break;
+				case 4: 
+					send = 'W';
+					break;
+				case 5:
+					send = 'A';
+					break;
+				case 6:
+					send = 'B';
+					break;
+				case 7:
+					send = 'C';
 					break;
 			}
-			write(sock,&send,sizeof(send));
-			printf("%c ",send);
-			if(i%9==0)
-				printf("\n");
+			
+				write(sock,&send,sizeof(send));
+				printf("%c ",send);
+				if(i%9==0)
+					printf("\n");
+			
 		}
 		
 /*
@@ -327,9 +343,12 @@ void* thread_map_handler(void* tmp){
 		}
 		//printf("##################");
 		write(sock,msg,sizeof(msg));
-*/				
-
-		sleep(3);
+*/
+		
+				
+		cnt++;
+		printf("##   %d    ##",cnt);
+		sleep(5);
 	}
 
 	close(sock);
@@ -405,6 +424,7 @@ void* thread_handler(void* num){
 					pthread_mutex_lock(&mu);
 					map[Robots[idx].rpos.x++][Robots[idx].rpos.y]=0;
 					map[Robots[idx].rpos.x][Robots[idx].rpos.y] = 1;
+
 					comm = 'F';
 					pthread_mutex_unlock(&mu);
 
@@ -429,6 +449,8 @@ void* thread_handler(void* num){
 					comm = 'W';
 					if(Loc[Robots[idx].loc-1].state==0){
 						Robots[idx].state++;
+						map[Loc[Robots[idx].loc-1].no*2+1][0] = Robots[idx].loc+4;
+
 						Loc[Robots[idx].loc-1].match = 0;
 					}
 				}
@@ -605,6 +627,7 @@ void Ultra(int num,int trig,int echo){
 	/* PUSH */
 	if(Loc[num].dist==3){
 		if(Loc[num].state==0){
+			map[Loc[num].no*2+1][0] = 4;
 			Loc[num].state = 1;
 			if(Loc[num].full<SMAX){
 				Loc[num].full++;
@@ -613,7 +636,7 @@ void Ultra(int num,int trig,int echo){
 					front = 0;
 				else
 					front++;
-			
+				
 				printf(" ##### Local [%d] push\n\n",num);
 			}else{
 				printf(" [!] No more stores are left...\n\n");
